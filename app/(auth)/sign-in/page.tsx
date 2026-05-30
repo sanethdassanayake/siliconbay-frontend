@@ -3,6 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -40,6 +41,8 @@ const SignIn = () => {
   const [isLoading, setIsLoading] = React.useState(false);
 
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const returnTo = searchParams.get("returnTo") ?? "/";
 
   const form = useForm<SignInValues>({
     resolver: zodResolver(signInSchema),
@@ -78,7 +81,7 @@ const SignIn = () => {
 
       toast.success("Signed in successfully!");
 
-      router.push("/");
+      router.replace(returnTo);
     } catch (error) {
       toast.error(
         error instanceof Error
@@ -91,7 +94,7 @@ const SignIn = () => {
   };
 
   return (
-    <Card className="w-[400px] mb-8 rounded-lg border-0 sm:border shadow-none">
+    <Card className="w-full max-w-md mb-8 rounded-lg border-0 sm:border shadow-none">
       <CardHeader>
         <CardTitle>
           <h2 className="text-xl font-medium">Sign in to your account</h2>
@@ -146,7 +149,7 @@ const SignIn = () => {
         </Form>
 
         <p className="text-sm text-gray-600">
-          By signing in, you agree to SiliconBay's{" "}
+          By signing in, you agree to SiliconBay&apos;s{" "}
           <Link href="/terms" className="text-blue-600 hover:underline">
             Terms of Service
           </Link>{" "}

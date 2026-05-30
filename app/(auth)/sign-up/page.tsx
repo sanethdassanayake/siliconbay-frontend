@@ -102,7 +102,7 @@ const SignUp = () => {
 
       const responseData = await response.json();
 
-      if (!response.ok) {
+      if (!response.ok || responseData.status !== true) {
         throw new Error(responseData.message || "Failed to create account");
       }
 
@@ -123,7 +123,7 @@ const SignUp = () => {
   };
 
   return (
-    <Card className="w-[400px] mb-8 rounded-lg border-0 sm:border shadow-none">
+    <Card className="w-full max-w-md mb-8 rounded-lg border-0 sm:border shadow-none">
       <CardHeader>
         <CardTitle>
           <h2 className="text-xl font-medium">Create your account</h2>
@@ -208,7 +208,7 @@ const SignUp = () => {
         </Form>
 
         <p className="text-sm text-gray-600">
-          By signing up, you agree to SiliconBay's{" "}
+          By signing up, you agree to SiliconBay&apos;s{" "}
           <Link href="/terms" className="text-blue-600 hover:underline">
             Terms of Service
           </Link>{" "}

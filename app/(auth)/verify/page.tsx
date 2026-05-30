@@ -114,7 +114,7 @@ const VerifyCodeContent = () => {
   };
 
   return (
-    <Card className="w-[400px] mb-8 rounded-lg border-0 sm:border shadow-none">
+    <Card className="w-full max-w-md mb-8 rounded-lg border-0 sm:border shadow-none">
       <CardHeader>
         <CardTitle>
           <h2 className="text-xl font-medium">Enter Verification Code</h2>

@@ -4,11 +4,21 @@ import BreadcrumbSection from "@/components/BreadcrumbSection";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header"
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
+import { useEffect } from "react";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
 
     const pathName = usePathname();
+    const router = useRouter();
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            router.replace("/sign-in");
+        }
+    }, [router]);
 
     const buttons = [
         { name: 'Overview', href: '/account/overview' },
