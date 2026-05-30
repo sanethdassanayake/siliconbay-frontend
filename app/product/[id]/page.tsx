@@ -1,20 +1,19 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-import { Heart, ShoppingCart } from 'lucide-react';
-
 import { Products } from '@/constants/DummyData';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Toggle } from '@/components/ui/toggle';
 import BreadcrumbSection from '@/components/BreadcrumbSection';
 import ProductImageGallery from '@/components/ProductImageGallery';
 import StarRating from '@/components/StarRating';
-import CategoryList from '@/components/CategoryList';
 import ProductSection from '@/components/ProductSection';
 import RatingBreakdown from '@/components/RatingBreakdown';
 import ReviewFilter from '@/components/ReviewFilter';
 import { Input } from '@/components/ui/input';
+import { productService } from '@/lib/services/productService';
+import { notFound } from 'next/navigation';
+import ProductActions from '@/components/ProductActions';
 
 
 interface PageProps {
@@ -23,7 +22,11 @@ interface PageProps {
 
 const SingleProduct = async ({ params }: PageProps) => {
     const { id } = await params;
-    const product = Products.find((prod) => prod.id === id);
+    const product = (await productService.getProductById(id)) ?? Products.find((prod) => prod.id === id);
+
+    if (!product) {
+        notFound();
+    }
 
     return (
         <div className='flex-1'>
@@ -58,7 +61,7 @@ const SingleProduct = async ({ params }: PageProps) => {
                                 {/* <span className="text-yellow-500 text-lg">★★★★☆</span>
                                 <span className="text-gray-500">(3200 Reviews)</span> */}
 
-                                <Link href="#" className="flex items-center underline"> Seller's other items </Link>
+                                <Link href="#" className="flex items-center underline"> Seller&apos;s other items </Link>
                                 <Link href="#" className="flex items-center underline"> Contact Seller </Link>
                             </div>
                         </div>
@@ -137,21 +140,14 @@ const SingleProduct = async ({ params }: PageProps) => {
                     <hr className="border-gray-300" />
 
                     {/* CTA BUTTONS */}
-                    <div className="grid md:flex items-center gap-2">                        
-                        <Button size="lg" className="flex-1 md:flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-600 rounded-full">
-                            <label>Buy Now</label>
-                        </Button>
-
-                        <div className='flex gap-2'>
-                            <Toggle variant="outline" className="flex-1 md:flex rounded-full data-[state=on]:*:[svg]:fill-amber-500 data-[state=on]:*:[svg]:stroke-amber-500" size="lg">
-                                <Heart size={16} className="scale-150" />
-                            </Toggle>
-
-                            <Toggle variant="outline" className="flex-1 md:flex rounded-full data-[state=on]:*:[svg]:fill-amber-500 data-[state=on]:*:[svg]:stroke-amber-500" size="lg">
-                                <ShoppingCart size={16} className="scale-150" />
-                            </Toggle>
-                        </div>
-                    </div>
+                    <ProductActions
+                      id={product.id}
+                      name={product.name}
+                      price={product.price}
+                      image={product.images?.[0] || "/products/microcontroller.jpg"}
+                      stock={product.stock ?? product.availableQty}
+                      brand={product.brand ?? product.manufacturerName}
+                    />
 
                     <hr className="border-gray-300" />
 

@@ -1,26 +1,36 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Heart, Menu, Search, X } from "lucide-react";
 import Cart from "./Cart";
+import { useWishlist } from "./providers";
 
 const Header = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { itemCount: wishlistItemCount } = useWishlist();
 
-  const [user, setUser] = useState<{
+  const [user] = useState<{
     firstName: string;
     lastName: string;
-  } | null>(null);
+  } | null>(() => {
+    if (typeof window === "undefined") {
+      return null;
+    }
 
-  useEffect(() => {
     const token = localStorage.getItem("token");
     const userData = localStorage.getItem("user");
 
-    if (token && userData) {
-      setUser(JSON.parse(userData));
+    if (!token || !userData) {
+      return null;
     }
-  }, []);
+
+    try {
+      return JSON.parse(userData) as { firstName: string; lastName: string };
+    } catch {
+      return null;
+    }
+  });
 
   return (
     <header>
@@ -38,6 +48,16 @@ const Header = () => {
               <Link href="/account/overview" className="underline ml-1">
                 {user.firstName}
               </Link>
+              <button
+                className="ml-4 underline"
+                onClick={() => {
+                  localStorage.removeItem("token");
+                  localStorage.removeItem("user");
+                  window.location.href = "/";
+                }}
+              >
+                Sign Out
+              </button>
             </div>
           ) : (
             <>
@@ -78,7 +98,7 @@ const Header = () => {
         <div className="gap-8 flex">
           <Link href="/account/wishlist" className="flex items-center">
             <Heart size={24} />
-            <span className="ml-2 hidden md:inline">Wishlist (0)</span>
+            <span className="ml-2 hidden md:inline">Wishlist ({wishlistItemCount})</span>
           </Link>
 
           <Cart />
@@ -127,6 +147,16 @@ const Header = () => {
                   <Link href="/account/overview" className="underline ml-2">
                     Profile
                   </Link>
+                  <button
+                    className="ml-2 underline"
+                    onClick={() => {
+                      localStorage.removeItem("token");
+                      localStorage.removeItem("user");
+                      window.location.href = "/";
+                    }}
+                  >
+                    Sign Out
+                  </button>
                 </div>
               ) : (
                 <>

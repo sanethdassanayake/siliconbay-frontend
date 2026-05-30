@@ -1,36 +1,98 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SiliconBay Backend
 
-## Getting Started
+Simple university-level e-commerce backend built with:
+- Java 21
+- Embedded Tomcat
+- Jersey (JAX-RS)
+- Hibernate ORM
+- MySQL
 
-First, run the development server:
+## What is implemented
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- User auth flow: register, verify, login, logout
+- Product APIs: featured, best sellers, product by id
+- Cart CRUD
+- Wishlist CRUD
+- Order flow: checkout + read + status update + delete
+- Payment flow: payment methods + saved instruments CRUD
+- Transaction flow: read + status update + delete
+- Return flow: create + read + status update + delete
+- Seller management: create/update own seller profile
+- Admin management: users + sellers listing and updates
+- Startup DB seeding for demo data
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Base URL
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+`http://localhost:8080/siliconbay/api`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Demo users seeded on startup
 
-## Learn More
+- Admin
+  - email: `admin@siliconbay.com`
+  - password: `Admin@123`
+- Buyer
+  - email: `buyer@siliconbay.com`
+  - password: `Buyer@123`
+- Seller
+  - email: `seller@siliconbay.com`
+  - password: `Seller@123`
 
-To learn more about Next.js, take a look at the following resources:
+## Key API routes
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Public
+- `GET /test`
+- `POST /users`
+- `POST /users/login`
+- `POST /verify`
+- `GET /verify?email=...&verificationCode=...`
+- `GET /products/featured`
+- `GET /products/best-sellers`
+- `GET /products/{id}`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Authenticated user (`@IsUser`)
+- `GET /users/logout`
+- `GET /cart`
+- `POST /cart/items`
+- `PUT /cart/items/{id}`
+- `DELETE /cart/items/{id}`
+- `DELETE /cart/clear`
+- `GET /wishlist`
+- `POST /wishlist/items`
+- `PUT /wishlist/items/{id}`
+- `DELETE /wishlist/items/{id}`
+- `DELETE /wishlist/clear`
+- `POST /payments/instruments`
+- `GET /payments/instruments`
+- `PUT /payments/instruments/{id}`
+- `DELETE /payments/instruments/{id}`
+- `GET /payments/methods`
+- `POST /orders/checkout`
+- `GET /orders`
+- `GET /orders/{id}`
+- `PUT /orders/{id}/status`
+- `DELETE /orders/{id}`
+- `GET /transactions`
+- `GET /transactions/{id}`
+- `PUT /transactions/{id}/status`
+- `DELETE /transactions/{id}`
+- `POST /returns`
+- `GET /returns`
+- `GET /returns/{id}`
+- `PUT /returns/{id}/status`
+- `DELETE /returns/{id}`
+- `POST /sellers`
+- `GET /sellers/me`
+- `PUT /sellers/me`
 
-## Deploy on Vercel
+### Admin (`@IsAdmin`)
+- `GET /admin/users`
+- `PUT /admin/users/{id}`
+- `GET /admin/sellers`
+- `PUT /admin/sellers/{id}`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Notes
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- This project keeps validation/basic rules simple for university use.
+- Passwords are stored as plain text by design for this project scope.
+- Seeder runs in `ContextPathListener` at startup and is idempotent-friendly.
+

@@ -1,16 +1,18 @@
 import Image from "next/image";
 
-import { Products } from "../../constants/DummyData";
-import { Button } from "@/components/ui/button";
-
-import HeroCarousel from "@/components/HeroCarousel";
 import ProductSection from "@/components/ProductSection";
+import HeroCarousel from "@/components/HeroCarousel";
 import CategoryList from "@/components/CategoryList";
+import { Button } from "@/components/ui/button";
+import { productService } from "@/lib/services/productService";
 
-export default function Home() {
-
-  const featuredProducts = Products.slice(0, 6); // Select first 4 products as featured
-
+export default async function Home() {
+  
+  const [featuredProducts, bestSellerProducts] = await Promise.all([
+    productService.getFeaturedProducts().catch(() => []),
+    productService.getBestSellerProducts().catch(() => []),
+  ])
+  
   return (
     <main className="flex-1">
       <CategoryList />
@@ -19,17 +21,17 @@ export default function Home() {
 
       <ProductSection section="Featured Products" products={featuredProducts} />
 
-      <ProductSection section="Best Sellers" products={featuredProducts} />
+      <ProductSection section="Best Sellers" products={bestSellerProducts} />
 
-      <ProductSection section="Today's Deals" products={featuredProducts} />
+      <ProductSection section="Today's Deals" products={[]} />
 
       <div className="bg-amber-300 rounded-t-2xl overflow-hidden mt-8">
         <div className="grid lg:grid-cols-2 items-center px-8 py-12 gap-8">
-
           {/* Left Content */}
           <div className="flex flex-col gap-4 lg:px-8">
             <h1 className="text-3xl md:text-5xl font-bold leading-snug">
-              Get help exactly<br /> when you need it
+              Get help exactly
+              <br /> when you need it
             </h1>
 
             <p className="text-lg text-black/80">
@@ -54,10 +56,8 @@ export default function Home() {
               className="object-cover rounded-2xl"
             />
           </div>
-
         </div>
       </div>
-
-    </main >
+    </main>
   );
 }

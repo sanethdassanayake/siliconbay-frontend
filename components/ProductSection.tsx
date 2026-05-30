@@ -1,16 +1,9 @@
 import React from 'react'
 import ProductCard from './ProductCard';
+import { Product } from '@/types/product';
 
 type ProductSectionProps = {
-    products: {
-        id: string;
-        name: string;
-        brand: string;
-        price: number;
-        discount: number;
-        stock: number;
-        images?: string[];
-    }[];
+    products: Product[];
     section: string;
 }
 
@@ -22,7 +15,7 @@ const ProductSection = ({ section, products }: ProductSectionProps) => {
             <div className="flex gap-6 overflow-x-auto no-scrollbar snap-x snap-mandatory">
                 {products.map((product) => (
                     <div key={product.id} className="snap-start">
-                        <ProductCard {...product} />
+                        <ProductCard product={product} />
                     </div>
                 ))}
             </div>
